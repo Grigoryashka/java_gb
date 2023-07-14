@@ -20,7 +20,7 @@ public class linked_lists {
         }
         System.out.println("\nСвязный список: " + list);
 
-        MyQueue<Integer> queue = new MyQueue(list);
+        MyQueue<Integer> queue = new MyQueue<>(list);
         
         System.out.println("\nПервый удаленный элемент: " + queue.dequeue());
         System.out.println("Первый не удаленный элемент: " + queue.first());
