@@ -23,7 +23,7 @@ public class exeptios {
         System.out.println(a + b);
     }
 
-    // TASKS 1 and 3
+    // TASKS 1 and 4
     public static Float number() throws Exception{
         Scanner in = new Scanner(System.in);
         Float num = null;
