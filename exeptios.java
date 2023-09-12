@@ -1,49 +1,94 @@
-﻿
+﻿import java.lang.Object;
+import java.util.ArrayList;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
 public class exeptios {
     public static void main(String[] args) throws Exception{
-        //System.out.println(number());
-        try {
-            int a = 90;
-            int b = 3;
-            System.out.println(a / b);
-            printSum(23, 234);
-            int[] abc = { 1, 2 };
-            abc[3] = 9;
-        }catch (NullPointerException ex) {
-            System.out.println("Указатель не может указывать на null!");
-        } catch (IndexOutOfBoundsException ex) {
-            System.out.println("Массив выходит за пределы своего размера!");
-        }
-    
-         
-    }
-    public static void printSum(Integer a, Integer b){
-        System.out.println(a + b);
+        Scanner in = new Scanner(System.in);
+
+        LFM(in.nextLine());
+        in.close();
     }
 
-    // TASKS 1 and 4
-    public static Float number() throws Exception{
-        Scanner in = new Scanner(System.in);
-        Float num = null;
-        String str = in.nextLine();
-        if (str.equals("")){
-            in.close();
-            throw new Exception("String can not be empty!");
-        }
-        while(true){
-            try {
-                num = Float.parseFloat(str);
-                in.close();
-                break;
+    public static String LFM(String str) throws AmountException{
+        ArrayList<String> lfm = new ArrayList<>();
+        String[] arr = str.split(" ");
+        char gen = 0;
+        String str_date = null;
+        Long phone = null;
+
+        for (String object : arr) {
+            if (object.length() == 1 && (object.equals("m") || object.equals("f"))){
+                gen = object.charAt(0);
+                System.out.println(gen);
             }
-            catch (NumberFormatException e) {
+            else{
+                try {
+                    phone = Long.parseLong(object);
+                    System.out.println(phone);
+                } catch (NumberFormatException e) {
+                    // TODO: handle exception
+                    try{
+                    new SimpleDateFormat("dd.MM.yyyy").parse(object);
+                    str_date = object;
+                    System.out.println(str_date);
+                    } catch(ParseException ex){
+                        // TODO: handle exception
+                        lfm.add(object);
+                    }
+                }
+            }
+            
+        }
+        if (arr.length != 6 || lfm.size() != 3 || gen == 0 || str_date == null || phone == null)
+            throw new AmountException("The amount of values is incorrect", arr.length);
+        else {
+            String result;
+            try {
+                String person = lfm.get(0) + ".txt";
+                Integer count = 0;
+                Integer countLines = 0;
+                File lastName = new File(person);
+                lastName.createNewFile();
+                FileWriter writer = new FileWriter(person, true);
+                RandomAccessFile raf = new RandomAccessFile(person, "r");
+                person = "<" + lfm.get(0) + "> <" + lfm.get(1) + "> <" + lfm.get(2) + "> <" + str_date + "> <" + phone + "> <" + gen + ">\n";                
+                result = raf.readLine() + "\n";
+                while(result != null){
+                System.out.println(count + " " + countLines + (result + "\n").equals(person));
+                    countLines += 1;
+                    if((result + "\n").equals(person) || result.equals(person))
+                        break;
+                    else
+                        count += 1;
+                    result = raf.readLine();
+                    System.out.println(result);
+                }
+                if(count == countLines) writer.write(person);
+
+                raf.close();
+                writer.close();
+            } catch (IOException e) {
                 // TODO: handle exception
                 System.out.println(e);
-                str = in.nextLine();
             }
         }
-        return num;
+        System.out.println(lfm);
+        return " ";
+    }
+}
+class AmountException extends Exception{
+ 
+    private int number;
+    public int getNumber(){return number;}
+    public AmountException(String message, int num){
+        super(message);
+        number=num;
     }
 }
